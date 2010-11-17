@@ -22,5 +22,5 @@
 ----
 === 通信方法 ===
 　||送信データ||プロトコル||ライブラリ||
-　||メディア||RTP||http://sourceforge.jp/projects/sfnet_rtp-lib/ or http://www.streamcoders.com/products/rtpnet.html||
-　||コマンド||TCP||System.Net.Sockets.TcpListener, System.Net.Sockets.TcpClient||
+　||メディア||RTP||http://sourceforge.jp/projects/sfnet_rtp-lib/<br> http://www.streamcoders.com/products/rtpnet.html||
+　||コマンド||TCP||[http://msdn.microsoft.com/ja-jp/library/system.net.sockets.tcplistener.aspx System.Net.Sockets.TcpListener]<br> [http://msdn.microsoft.com/ja-jp/library/system.net.sockets.tcpclient.aspx System.Net.Sockets.TcpClient]||
