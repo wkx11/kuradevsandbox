@@ -1,0 +1,26 @@
+#メディアサーバとのの通信方法
+
+== 【Introduction】 ==
+
+ # モニタリング部分
+ # メディアサーバ部分
+ # 通信方法
+
+
+== 【Details】 ==
+
+=== モニタリング部 ===
+開発環境
+ * Visual Studio 2010 (C++)
+ * Framework .NET 4.0
+ * DirectShow
+
+----
+=== サーバ部 ===
+　あ、あとから書くよっ！
+
+----
+=== 通信方法 ===
+　||送信データ||プロトコル||ライブラリ||
+　||メディア||RTP||http://sourceforge.jp/projects/sfnet_rtp-lib/||
+　||コマンド||TCP||||
