@@ -126,44 +126,11 @@ private:
 	// CmboBoxのインデックス値(アクセス制限回避用)
 	int cboxIndex;
 
-	// cv::MatをDrawing::Bitmapへ変換
-	System::Drawing::Bitmap^ encodeMatToImage(cv::Mat *src) {
-		// バッファにメモリを割り当てる
-		System::Drawing::Bitmap ^dst = gcnew System::Drawing::Bitmap(src->cols, src->rows, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
-
-		// 直接アクセス開始
-		System::Drawing::Imaging::BitmapData ^data = dst->LockBits(
-			*(gcnew System::Drawing::Rectangle(0, 0, dst->Width, dst->Height)), 
-			System::Drawing::Imaging::ImageLockMode::ReadWrite, 
-			System::Drawing::Imaging::PixelFormat::Format24bppRgb
-		);
-
-		// 参照カウンタの追加
-		src->addref();
-
-		// データのコピー
-		if (src->channels() == 3 && src->isContinuous()) {
-			memcpy(data->Scan0.ToPointer(), src->data, src->rows * src->cols * src->channels());
-		}
-		else {
-			for (int i = 0; i < src->rows * src->cols; i++) {
-				byte *p = (byte *)data->Scan0.ToPointer();
-				*(p + i * 3) = *(p + i * 3 + 1) = *(p + i * 3 + 2) = *(src->data + i);
-			}
-		}
-
-		// 参照を終了
-		src->release();
-
-		// 直接アクセス終了
-		dst->UnlockBits(data);
-		return dst;
-	}
-
 	// イメージをPictureBoxへ表示させる
 	System::Void Image(cv::Mat *img)
 	{
-		this->pictureBox1->Image = encodeMatToImage(img);
+		this->pictureBox1->Image = UFOHunt::Lib::ImageConverter::Mat2DotNetBMP(
+			UFOHunt::Lib::ImageConverterData_cvMat::Create(img->rows, img->cols, img->flags, img->data));
 	}
 
 private: 
@@ -211,53 +178,53 @@ private:
 
 	// Startボタンクリックイベント
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-				 // 邪魔なボタンを非表示にする
-				 this->button1->Visible = false;
+		// 邪魔なボタンを非表示にする
+		this->button1->Visible = false;
 
-				 // スレッド作成して起動
-				 th = gcnew System::Threading::Thread(gcnew System::Threading::ParameterizedThreadStart(&Form1::th_callback));
-				 th->Start(this);
-			 }
+		// スレッド作成して起動
+		th = gcnew System::Threading::Thread(gcnew System::Threading::ParameterizedThreadStart(&Form1::th_callback));
+		th->Start(this);
+	}
 
 	// フォームを閉じる直前に呼ばれるイベント
 	private: System::Void Form1_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
-				 if (nullptr != th) {
-					 th->Abort();
-					 th->Join();
-				 }
-			 }
+		if (nullptr != th) {
+			th->Abort();
+			th->Join();
+		}
+	}
 	// スレッド間アクセス制限を回避するための代入処理
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-				 cboxIndex = comboBox1->SelectedIndex;
-			 }
+		cboxIndex = comboBox1->SelectedIndex;
+	}
 	// 保存ボタン処理(おまけ)
 	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-				 // ビデオ再生前は実行しない
-				 if (button1->Visible == true) return;
+		// ビデオ再生前は実行しない
+		if (button1->Visible == true) return;
 
-				 // 出力ディレクトリパス
-				 String^ saveDir = ".\\Save\\";
-				 // 出力ファイル番号
-				 int saveNo = 0;
+		// 出力ディレクトリパス
+		String^ saveDir = ".\\Save\\";
+		// 出力ファイル番号
+		int saveNo = 0;
 
-				 ArrayList^ files = gcnew ArrayList();
+		ArrayList^ files = gcnew ArrayList();
 
-				 // 出力ディレクトリの存在チェック
-				 if (IO::Directory::Exists(saveDir)) {
-					 // 出力ディレクトリ内のファイルリスト取得
-					 files->AddRange(IO::Directory::GetFiles(saveDir, "Save????.jpg"));
-					 // 出力ファイル番号の最大値を取得
-					 if (files->Count > 0) {
-						files->Sort();
-						saveNo = Int32::Parse(dynamic_cast<String^>(files[files->Count - 1])->Substring(saveDir->Length + 4, 4)) + 1;
-					 }
-				 } else {
-					 IO::Directory::CreateDirectory(saveDir);
-				 }
-				 // jpgでファイルを保存
-				 System::Diagnostics::Trace::WriteLine("SaveName => " + String::Format(saveDir + "Save{0:D4}.jpg", saveNo));
-				 pictureBox1->Image->Save(String::Format(saveDir + "Save{0:D4}.jpg", saveNo));
-			 }
+		// 出力ディレクトリの存在チェック
+		if (IO::Directory::Exists(saveDir)) {
+			// 出力ディレクトリ内のファイルリスト取得
+			files->AddRange(IO::Directory::GetFiles(saveDir, "Save????.jpg"));
+			// 出力ファイル番号の最大値を取得
+			if (files->Count > 0) {
+			files->Sort();
+			saveNo = Int32::Parse(dynamic_cast<String^>(files[files->Count - 1])->Substring(saveDir->Length + 4, 4)) + 1;
+			}
+		} else {
+			IO::Directory::CreateDirectory(saveDir);
+		}
+		// jpgでファイルを保存
+		System::Diagnostics::Trace::WriteLine("SaveName => " + String::Format(saveDir + "Save{0:D4}.jpg", saveNo));
+		pictureBox1->Image->Save(String::Format(saveDir + "Save{0:D4}.jpg", saveNo), System::Drawing::Imaging::ImageFormat::Jpeg);
+	}
 };
 
 	
