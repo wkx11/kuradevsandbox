@@ -41,9 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\..\OpenCV-2.2.0-mybuild_with_ffmpeg\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\OpenCV-2.2.0-mybuild_with_ffmpeg\lib\Debug;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\..\OpenCV-2.2.0-mybuild_with_ffmpeg\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\OpenCV-2.2.0-mybuild_with_ffmpeg\lib\Release;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -55,7 +59,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cv210d.lib; cxcore210d.lib; highgui210d.lib</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core220d.lib;opencv_highgui220d.lib;opencv_imgproc220d.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
@@ -69,7 +73,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cv210.lib; cxcore210.lib; highgui210.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core220.lib;opencv_highgui220.lib;opencv_imgproc220.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>

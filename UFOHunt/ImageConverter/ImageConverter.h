@@ -95,7 +95,7 @@ namespace UFOHunt{ namespace Lib {
 		// CvMat構造体形式でデータを返す。64bit環境だと多分データ壊れます。
 		void *ToCvMat() 
 		{
-			CvMat *dst = cvCreateMatHeader(rows, cols, (int)type);
+			CvMat *dst = ::cvCreateMatHeader(rows, cols, (int)type);
 			dst->data.ptr = data;
 			if (refcount)
 				dst->refcount = refcount;
