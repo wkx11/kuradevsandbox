@@ -184,7 +184,6 @@ namespace OpenMovie {
 			this->playRealtime->AutoSize = true;
 			this->playRealtime->Checked = true;
 			this->playRealtime->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->playRealtime->Enabled = false;
 			this->playRealtime->Location = System::Drawing::Point(6, 18);
 			this->playRealtime->Name = L"playRealtime";
 			this->playRealtime->Size = System::Drawing::Size(84, 16);
@@ -266,17 +265,24 @@ namespace OpenMovie {
 				 cv::Mat frame;
 				 // 再生時間管理
 				 DateTime start = DateTime::Now;
+
 				 while (1) {
 					 if (worker->CancellationPending)
 						 break;
 
-					 // 実時間再生時再生タイミング調整(失敗コード)
-					 /*
+					 // 実時間再生時再生タイミング調整(Vista以降用)
+					 // 正しく同期するためにはThread.Sleepの精度が1ms必要
 					 if (this->playRealtime->Checked) {
-						 TimeSpan ts = DateTime::Now - start;
-						 cap.set(CV_CAP_PROP_POS_MSEC, ts.TotalMilliseconds);
+						 TimeSpan^ ts = DateTime::Now - start;
+						 try {
+							 int sleepTime = cap.get(CV_CAP_PROP_POS_MSEC) - ts->TotalMilliseconds;
+							 if (sleepTime > 0)
+								System::Threading::Thread::Sleep(sleepTime);
+						 } catch (Exception^ ex) {
+							 System::Diagnostics::Trace::WriteLine("ts_ms:" + ts->TotalMilliseconds + " || cap_ms:" + cap.get(CV_CAP_PROP_POS_MSEC));
+							 System::Diagnostics::Trace::WriteLine("" + ex);
+						 }
 					 }
-					 */
 
 					 // フレーム取得
 					 cap >> frame;
